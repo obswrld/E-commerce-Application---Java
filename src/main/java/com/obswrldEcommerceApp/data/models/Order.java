@@ -26,9 +26,6 @@ public class Order {
     @NotBlank
     private String customerId;
 
-    @NotBlank
-    private String productId;
-
     @NotNull
     private List<OrderItem> orderItemList = new ArrayList<>();
 

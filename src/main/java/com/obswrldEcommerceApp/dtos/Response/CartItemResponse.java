@@ -1,10 +1,12 @@
 package com.obswrldEcommerceApp.dtos.Response;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
+@Builder
 public class CartItemResponse {
     private String productId;
     private int quantity;
