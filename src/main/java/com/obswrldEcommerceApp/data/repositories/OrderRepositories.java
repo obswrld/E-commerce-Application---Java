@@ -1,4 +1,20 @@
 package com.obswrldEcommerceApp.data.repositories;
 
-public interface OrderRepositories {
+import com.obswrldEcommerceApp.data.models.Order;
+import com.obswrldEcommerceApp.data.models.OrderItem;
+import com.obswrldEcommerceApp.data.models.OrderStatus;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface OrderRepositories extends MongoRepository<Order, String> {
+
+    List<Order> findByCustomerId(String customerId);
+
+    List<Order> findByDelivered(OrderStatus status);
+
+
 }
