@@ -1,5 +1,6 @@
 package com.obswrldEcommerceApp.dtos.Request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,16 +10,13 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class PaymentRequest {
+public class OrderItemRequest {
     @NotNull
-    private String orderId;
+    private String productId;
 
     @NotNull
-    private BigDecimal price;
-
-    @NotNull
-    private String method;
+    private int quantity;
 }

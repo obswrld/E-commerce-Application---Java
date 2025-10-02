@@ -1,24 +1,24 @@
 package com.obswrldEcommerceApp.dtos.Request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class PaymentRequest {
-    @NotNull
-    private String orderId;
+public class ReviewRequest {
+    @NotBlank
+    private String productId;
 
     @NotNull
-    private BigDecimal price;
+    private int rating;
+    private String comment;
 
-    @NotNull
-    private String method;
+    @NotBlank
+    private String customerId;
 }

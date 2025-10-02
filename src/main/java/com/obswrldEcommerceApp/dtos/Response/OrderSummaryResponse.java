@@ -1,6 +1,6 @@
 package com.obswrldEcommerceApp.dtos.Response;
 
-import com.obswrldEcommerceApp.data.models.OrderItem;
+import com.obswrldEcommerceApp.data.models.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,17 +8,14 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.List;
 
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
-public class OrderResponse {
+public class OrderSummaryResponse {
     private String orderId;
     private String customerId;
-    private List<OrderItem> orderItems;
-    private BigDecimal totalPrice;
-    private String orderStatus;
-    private Instant creationAt;
+    private OrderStatus orderStatus;
+    private Instant createdAt;
 }

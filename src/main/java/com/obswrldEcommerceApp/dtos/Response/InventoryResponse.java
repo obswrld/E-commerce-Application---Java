@@ -1,4 +1,4 @@
-package com.obswrldEcommerceApp.dtos.Request;
+package com.obswrldEcommerceApp.dtos.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CartItemRequest {
+public class InventoryResponse {
+    private String inventoryId;
     private String productId;
     private int stock;
+    private int reserved;
 }

@@ -2,13 +2,19 @@ package com.obswrldEcommerceApp.dtos.Request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class LoginRequest {
+public class UserRegistrationRequest {
+    @NotBlank
+    private String name;
 
     @NotBlank
     @Email
@@ -16,13 +22,4 @@ public class LoginRequest {
 
     @NotBlank
     private String password;
-
-    @Data
-    @Builder
-    public static class PaymentRequest {
-        private String orderId;
-        private String customerId;
-        private BigDecimal amount;
-        private String merchant;
-    }
 }

@@ -2,12 +2,16 @@ package com.obswrldEcommerceApp.dtos.Request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class UserRequest {
-    @NotBlank
-    private String name;
+public class UserLoginRequest {
 
     @NotBlank
     @Email

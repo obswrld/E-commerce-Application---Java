@@ -1,4 +1,4 @@
-package com.obswrldEcommerceApp.dtos.Request;
+package com.obswrldEcommerceApp.dtos.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ProductRequest {
-    private String name;
-    private String description;
+public class OrderItemResponse {
+    private String productId;
+    private int quantity;
     private BigDecimal price;
-    private int stock;
-    private String category;
-    private String sellerId;
 }

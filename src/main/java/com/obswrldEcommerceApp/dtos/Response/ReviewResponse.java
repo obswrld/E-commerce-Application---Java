@@ -1,22 +1,21 @@
 package com.obswrldEcommerceApp.dtos.Response;
 
-import com.obswrldEcommerceApp.data.models.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.util.Set;
 
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @Data
-@Builder
-public class UserResponse {
-    private String userId;
-    private String name;
-    private String email;
-    private Set<Role> roles;
+public class ReviewResponse {
+    private String reviewId;
+    private String productId;
+    private int rating;
+    private String comment;
+    private String customerId;
     private Instant createdAt;
 }
