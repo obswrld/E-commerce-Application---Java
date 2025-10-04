@@ -14,6 +14,4 @@ public class ProductResponse {
     private BigDecimal price;
     private String category;
     private String description;
-    private Instant createdAt;
-    private String sellerId;
 }

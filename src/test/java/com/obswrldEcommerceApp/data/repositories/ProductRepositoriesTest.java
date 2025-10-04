@@ -30,6 +30,7 @@ public class ProductRepositoriesTest {
                 .description("Hp-class")
                 .category("Gadgets")
                 .price(new BigDecimal("125000.00"))
+                .sellerId("sellerId-232")
                 .quantity(10)
                 .build();
 
@@ -38,6 +39,7 @@ public class ProductRepositoriesTest {
                 .description("Apple Smart Phones")
                 .category("Gadgets")
                 .price(new BigDecimal("1250000.00"))
+                .sellerId("sellerId-123")
                 .quantity(5)
                 .build();
 
@@ -57,6 +59,12 @@ public class ProductRepositoriesTest {
                 new BigDecimal("125000.00"), new BigDecimal("12550000.00")
         );
         assertThat(products).hasSize(1);
+    }
+
+    @Test
+    public void testFindBySellerId(){
+        List<Product> seller = productRepositories.findBySellerId("sellerId-123");
+        assertThat(seller).hasSize(1);
     }
 
     @Test
