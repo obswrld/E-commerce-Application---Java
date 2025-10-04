@@ -1,13 +1,10 @@
-package com.oswrldEcommerceApp.data.repositories;
+package com.obswrldEcommerceApp.data.repositories;
 
-
-import com.obswrldEcommerceApp.Main;
 import com.obswrldEcommerceApp.data.models.Product;
-import com.obswrldEcommerceApp.data.repositories.ProductRepositories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@SpringBootTest(classes = Main.class)
+@DataMongoTest
 public class ProductRepositoriesTest {
 
     @Autowired

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +36,7 @@ public class User {
     private String password;
 
     private Set<Role> roles = new HashSet<>();
+
     private Address address;
 
     @CreatedDate

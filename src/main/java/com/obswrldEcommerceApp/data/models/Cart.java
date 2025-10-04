@@ -1,15 +1,11 @@
 package com.obswrldEcommerceApp.data.models;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -26,6 +22,7 @@ public class Cart {
 
     @NotBlank
     private String customerId;
+
     private List<CartItems> items = new ArrayList<>();
 
     @CreatedDate

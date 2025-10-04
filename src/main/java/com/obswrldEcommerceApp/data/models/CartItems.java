@@ -1,14 +1,9 @@
 package com.obswrldEcommerceApp.data.models;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import lombok.*;
 import java.math.BigDecimal;
 
 @NoArgsConstructor
@@ -16,7 +11,6 @@ import java.math.BigDecimal;
 @Builder
 @Data
 public class CartItems {
-    @Id
     private String productId;
 
     @NotNull
@@ -24,6 +18,6 @@ public class CartItems {
     private Integer quantity;
 
     @NotNull
-    @Min(1)
+    @DecimalMin("0.0")
     private BigDecimal price;
 }

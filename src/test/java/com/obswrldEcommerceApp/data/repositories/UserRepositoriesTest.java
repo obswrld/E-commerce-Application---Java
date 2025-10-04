@@ -1,14 +1,11 @@
-package com.oswrldEcommerceApp.data.repositories;
+package com.obswrldEcommerceApp.data.repositories;
 
-import com.mongodb.DuplicateKeyException;
-import com.obswrldEcommerceApp.Main;
 import com.obswrldEcommerceApp.data.models.Role;
 import com.obswrldEcommerceApp.data.models.User;
-import com.obswrldEcommerceApp.data.repositories.UserRepositories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 
 import java.util.Optional;
@@ -17,7 +14,7 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest(classes = Main.class)
+@DataMongoTest
 public class UserRepositoriesTest {
 
     @Autowired

@@ -1,0 +1,7 @@
+package com.obswrldEcommerceApp.services;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class UserServiceImplementationTest {
+
+}

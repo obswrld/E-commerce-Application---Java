@@ -1,33 +1,26 @@
-package com.oswrldEcommerceApp.data.repositories;
+package com.obswrldEcommerceApp.data.repositories;
 
-import com.obswrldEcommerceApp.Main;
 import com.obswrldEcommerceApp.data.models.Payment;
 import com.obswrldEcommerceApp.data.models.PaymentStatus;
-import com.obswrldEcommerceApp.data.repositories.PaymentRepositories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import java.math.BigDecimal;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = Main.class)
+@DataMongoTest
 public class PaymentRepositoriesTest {
-
     @Autowired
     private PaymentRepositories paymentRepositories;
 
     private Payment payment1;
     private Payment payment2;
 
-
     @BeforeEach
     public void setUp() {
         paymentRepositories.deleteAll();
-
         payment1 = Payment.builder()
                 .customerId("Customer-123")
                 .orderId("Order-123")

@@ -1,15 +1,11 @@
 package com.obswrldEcommerceApp.dtos.Response;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.time.Instant;
 
 @AllArgsConstructor
 @Builder
-@NoArgsConstructor
 @Data
 public class ReviewResponse {
     private String reviewId;

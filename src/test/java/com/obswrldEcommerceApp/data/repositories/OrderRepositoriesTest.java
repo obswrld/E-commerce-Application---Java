@@ -1,21 +1,19 @@
-package com.oswrldEcommerceApp.data.repositories;
+package com.obswrldEcommerceApp.data.repositories;
 
-
-import com.obswrldEcommerceApp.Main;
 import com.obswrldEcommerceApp.data.models.Order;
 import com.obswrldEcommerceApp.data.models.OrderStatus;
-import com.obswrldEcommerceApp.data.repositories.OrderRepositories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(classes = Main.class)
+@DataMongoTest
 public class OrderRepositoriesTest {
 
     @Autowired
@@ -31,13 +29,13 @@ public class OrderRepositoriesTest {
         order1 = Order.builder()
                 .customerId("customer-123")
                 .totalPrice(new BigDecimal("125000.00"))
-                .delivered(OrderStatus.PENDING)
+                .status(OrderStatus.PENDING)
                 .build();
 
         order2 = Order.builder()
                 .customerId("customer-009")
                 .totalPrice(new BigDecimal("235000.00"))
-                .delivered(OrderStatus.DELIVERED)
+                .status(OrderStatus.DELIVERED)
                 .build();
 
         orderRepositories.save(order1);
@@ -53,9 +51,9 @@ public class OrderRepositoriesTest {
 
     @Test
     public void findByStatus(){
-        List<Order> orders = orderRepositories.findByDelivered(OrderStatus.PENDING);
+        List<Order> orders = orderRepositories.findByStatus(OrderStatus.PENDING);
         assertThat(orders).hasSize(1);
-        assertThat(orders.get(0).getDelivered()).isEqualTo(OrderStatus.PENDING);
+        assertThat(orders.get(0).getStatus()).isEqualTo(OrderStatus.PENDING);
     }
 
     @Test
@@ -63,13 +61,13 @@ public class OrderRepositoriesTest {
         Order secondOrder = Order.builder()
                 .customerId("customer-123")
                 .totalPrice(new BigDecimal("300000.00"))
-                .delivered(OrderStatus.SHIPPED)
+                .status(OrderStatus.SHIPPED)
                 .build();
 
         orderRepositories.save(secondOrder);
 
         List<Order> orders = orderRepositories.findByCustomerId("customer-123");
         assertThat(orders).hasSize(2);
-        assertThat(orders).extracting(Order::getDelivered).contains(OrderStatus.SHIPPED,  OrderStatus.PENDING);
+        assertThat(orders).extracting(Order::getStatus).contains(OrderStatus.SHIPPED,  OrderStatus.PENDING);
     }
 }
