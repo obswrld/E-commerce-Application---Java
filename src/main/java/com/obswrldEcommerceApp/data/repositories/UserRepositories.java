@@ -10,6 +10,6 @@ import java.util.Set;
 @Repository
 public interface UserRepositories extends MongoRepository<User, String> {
     Optional<User> findByEmail(String email);
-    List<User> findByRoles(Set<Role> roles);
+    List<User> findByRolesIn(Set<Role> roles);
     boolean existsByEmail(String email);
 }

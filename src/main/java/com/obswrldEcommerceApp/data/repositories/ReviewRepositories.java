@@ -8,5 +8,4 @@ import java.util.List;
 public interface ReviewRepositories extends MongoRepository<Review, String> {
     List<Review> findByProductId(String productId);
     List<Review> findByCustomerId(String customerId);
-    List<Review> findByProductIdAndCustomerId(String productId, String customerId);
 }

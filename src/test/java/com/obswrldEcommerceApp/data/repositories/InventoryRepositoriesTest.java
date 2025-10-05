@@ -47,9 +47,10 @@ public class InventoryRepositoriesTest {
     }
 
     @Test
-    public void testFindByStock() {
-        List<Inventory> inventory1Found = inventoryRepositories.findByStock(5);
+    public void testFindByStockLessThan(){
+        List<Inventory> inventory1Found = inventoryRepositories.findByStockLessThan(6);
         assertThat(inventory1Found).hasSize(1);
-        assertThat(inventory1Found.get(0).getProductId()).isEqualTo("product-123");
+        assertThat(inventory1Found).extracting(Inventory::getStock).containsExactly(5);
     }
+
 }

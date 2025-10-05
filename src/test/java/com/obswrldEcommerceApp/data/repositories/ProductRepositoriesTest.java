@@ -48,7 +48,7 @@ public class ProductRepositoriesTest {
     }
 
     @Test
-    public void testByCategory(){
+    public void testFindByCategory(){
         List<Product> products = productRepositories.findByCategory("Gadgets");
         assertThat(products).hasSize(2);
     }

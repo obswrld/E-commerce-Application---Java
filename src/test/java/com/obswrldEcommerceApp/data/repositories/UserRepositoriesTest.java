@@ -78,7 +78,7 @@ public class UserRepositoriesTest {
     }
 
     @Test
-    public void testFindByRoles(){
+    public void testFindByRolesIn(){
         User buyer = User.builder()
                 .name("Esther")
                 .email("estherJohn50@yahoo.com")
@@ -96,7 +96,7 @@ public class UserRepositoriesTest {
         userRepository.save(buyer);
         userRepository.save(seller);
 
-        var customers = userRepository.findByRoles(Set.of(Role.BUYER));
+        var customers = userRepository.findByRolesIn(Set.of(Role.BUYER));
         assertThat(customers).hasSize(1);
         assertThat(customers.get(0).getEmail()).isEqualTo("estherJohn50@yahoo.com");
     }

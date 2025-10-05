@@ -7,5 +7,5 @@ import java.util.List;
 @Repository
 public interface InventoryRepositories extends MongoRepository<Inventory, String> {
     List<Inventory> findByProductId(String productId);
-    List<Inventory> findByStock(int stockThreshold);
+    List<Inventory> findByStockLessThan(int stockThreshold);
 }
