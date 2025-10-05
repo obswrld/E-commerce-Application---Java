@@ -19,4 +19,8 @@ public class Inventory {
     private int stock;
 
     private int reserved;
+
+    public int getAvailableStock(){
+        return stock - reserved;
+    }
 }

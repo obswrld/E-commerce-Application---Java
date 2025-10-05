@@ -29,7 +29,7 @@ public class Payment {
 
     private String method;
 
-    private PaymentStatus status;
+    private PaymentStatus status = PaymentStatus.PENDING;
 
     private Instant createdAt = Instant.now();
 }
