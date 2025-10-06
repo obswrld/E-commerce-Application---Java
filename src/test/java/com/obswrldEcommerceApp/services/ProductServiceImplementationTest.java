@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,5 +85,29 @@ class ProductServiceImplementationTest {
         assertNotNull(productResponse);
         assertEquals("Hp-Pavilion", productResponse.getName());
         verify(productRepositories, times(1)).findById("productId-123");
+    }
+
+    @Test
+    public void testFindAllProducts() {
+        when(productRepositories.findAll()).thenReturn(List.of(product));
+        List<ProductResponse> productResponseList = productServiceImplementation.getAllProducts();
+        assertNotNull(productResponseList);
+        assertEquals(1, productResponseList.size());
+        verify(productRepositories, times(1)).findAll();
+    }
+
+    @Test
+    public void testDeleteProductById() {
+        when(productRepositories.existsById("productId-123")).thenReturn(true);
+        productServiceImplementation.deleteProduct("productId-123");
+        verify(productRepositories, times(1)).existsById("productId-123");
+    }
+
+    @Test
+    public void testDeleteProductThrowExceptionWhenProductNotFound() {
+        when(productRepositories.existsById("productId-123")).thenReturn(false);
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> productServiceImplementation.deleteProduct("productId-123"));
+        assertEquals("Product not found", exception.getMessage());
     }
 }
