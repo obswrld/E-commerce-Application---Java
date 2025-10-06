@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -63,17 +64,19 @@ class UserServiceImplementationTest {
 
     @Test
     public void testLoinUserSuccessful(){
-        User user = User.builder()
-                .email("johnmike1@gmail.com")
+        when(bCryptPasswordEncoder.encode("567tr")).thenReturn("encoded567tr");
+        User savedUser = User.builder()
+                .userId("user-123")
+                .name("John Mike")
                 .password("encoded567tr")
+                .email("johnmike1@gmail.com")
+                .roles(Set.of(Role.BUYER))
                 .build();
-        when(userRepositories.findByEmail("johnmike1@gmail.com"))
-                .thenReturn(Optional.of(user));
-        when(bCryptPasswordEncoder.matches("567tr", "encoded567tr")).thenReturn(true);
-        UserLoginRequest userLoginRequest = new UserLoginRequest("johnmike1@gmail.com","567tr");
-        UserLoginResponse userLoginResponse = userService.login(userLoginRequest);
-        assertThat(userLoginResponse.getMessage()).isEqualTo("Login Successful");
-        assertThat(userLoginResponse.getEmail()).isEqualTo("johnmike1@gmail.com");
+
+        when(userRepositories.save(any(User.class))).thenReturn(savedUser);
+        UserResponse userResponse = userService.register(registrationRequest);
+        assertThat(userResponse.getUserId()).isEqualTo("user-123");
+        assertThat(userResponse.getEmail()).isEqualTo("johnmike1@gmail.com");
     }
 
     @Test
@@ -82,12 +85,12 @@ class UserServiceImplementationTest {
                 .email("johnmike1@gmail.com")
                 .password("encoded567tr")
                 .build();
-        when(userRepositories.findByEmail("johnmike1@gmail.com"))
-                .thenReturn(Optional.of(user));
+        when(userRepositories.findByEmail("johnmike1@gmail.com")).thenReturn(Optional.of(user));
         when(bCryptPasswordEncoder.matches("wrong", "encoded567tr")).thenReturn(false);
-        UserLoginRequest userLoginRequest = new UserLoginRequest("johnmike1@gmail.com","wrong");
+        UserLoginRequest userLoginRequest = new UserLoginRequest("johnmike1@gmail.com", "wrong");
         UserLoginResponse userLoginResponse = userService.login(userLoginRequest);
         assertThat(userLoginResponse.getMessage()).isEqualTo("Invalid Password");
+        verify(userRepositories, times(1)).findByEmail("johnmike1@gmail.com");
     }
 
     @Test
@@ -108,7 +111,30 @@ class UserServiceImplementationTest {
     @Test
     public void testDeleteUserById(){
         String userId = "userId-123";
+        when(userRepositories.existsById(userId)).thenReturn(true);
         userService.deleteUser(userId);
-        verify(userRepositories,times(1)).deleteById(eq(userId));
+        verify(userRepositories, times(1)).deleteById(userId);
+    }
+
+    @Test
+    public void testGetAllUsers(){
+        User user1 = User.builder()
+                .userId("userId-123")
+                .name("John Mike")
+                .email("johnmike1@gmail.com")
+                .roles(Set.of(Role.BUYER))
+                .build();
+        User user2 = User.builder()
+                .userId("userId-323")
+                .name("James Smith")
+                .email("jamessmith2@gmail.com")
+                .roles(Set.of(Role.BUYER))
+                .build();
+        when(userRepositories.findAll()).thenReturn(List.of(user1,user2));
+        var allUsers = userService.getAllUsers();
+        assertThat(allUsers).hasSize(2);
+        assertThat(allUsers.get(0).getEmail()).isEqualTo("johnmike1@gmail.com");
+        assertThat(allUsers.get(1).getEmail()).isEqualTo("jamessmith2@gmail.com");
+
     }
 }

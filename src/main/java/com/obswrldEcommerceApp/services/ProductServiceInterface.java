@@ -1,15 +1,17 @@
 package com.obswrldEcommerceApp.services;
 
 import com.obswrldEcommerceApp.data.models.Product;
+import com.obswrldEcommerceApp.dtos.Request.ProductRequest;
 import com.obswrldEcommerceApp.dtos.Response.ProductResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductServiceInterface {
-    ProductResponse addProduct(Product product);
-    ProductResponse updateProduct(Product product);
-    void deleteProduct(String productId);
-    ProductResponse getProductById(String productId);
+    ProductResponse createProduct(ProductRequest productRequest);
+    ProductResponse updateProduct(String productId, ProductRequest productRequest);
+    ProductResponse getProductById(String id);
     List<ProductResponse> getAllProducts();
-    List<ProductResponse> getProductsByCategory(String productName);
+    void deleteProduct(String productId);
+    List<ProductResponse> getProductByCategory(String category);
 }
