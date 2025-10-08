@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -112,4 +113,15 @@ class InventoryServiceImplementationTest {
         assertThat(lowStockResponse.get(0).getProductId()).isEqualTo("productId-123");
     }
 
+    @Test
+    public void testDeleteInventory(){
+        InventoryResponse savedResponse = inventoryServiceImplementation.addInventory(inventoryRequest);
+        inventoryServiceImplementation.deleteInventory(savedResponse.getInventoryId());
+        assertThat(inventoryRepositories.findAll().isEmpty()).isTrue();
+    }
+
+    @Test
+    public void testDeleteInventoryNotFound(){
+        assertThrows(RuntimeException.class, () -> inventoryServiceImplementation.deleteInventory("invalid-Id"));
+    }
 }
