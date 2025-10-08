@@ -1,7 +1,9 @@
 package com.obswrldEcommerceApp.utils;
 
+import com.obswrldEcommerceApp.data.models.Inventory;
 import com.obswrldEcommerceApp.data.models.Product;
 import com.obswrldEcommerceApp.dtos.Request.ProductRequest;
+import com.obswrldEcommerceApp.dtos.Response.InventoryResponse;
 import com.obswrldEcommerceApp.dtos.Response.ProductResponse;
 
 public class Mapper {
@@ -30,6 +32,18 @@ public class Mapper {
                 .category(productRequest.getCategory())
                 .sellerId(productRequest.getSellerId())
                 .quantity(productRequest.getStock())
+                .build();
+    }
+
+    public static InventoryResponse toInventoryResponse(Inventory inventory) {
+        if (inventory == null) {
+            return null;
+        }
+        return InventoryResponse.builder()
+                .inventoryId(inventory.getInventoryId())
+                .productId(inventory.getProductId())
+                .stock(inventory.getStock())
+                .reserved(inventory.getReserved())
                 .build();
     }
 }
