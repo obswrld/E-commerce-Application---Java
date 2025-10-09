@@ -15,9 +15,8 @@ import java.util.Set;
 @Data
 public class UserLoginResponse {
     private String message;
-    private String userId;
-//    private Set<Role> roles;
-//    @Email
-//    @NotBlank
-//    private String email;
+//    private String userId;
+    @Email
+    @NotBlank
+    private String email;
 }

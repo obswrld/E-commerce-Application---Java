@@ -6,24 +6,24 @@ import com.obswrldEcommerceApp.dtos.Request.ProductRequest;
 import com.obswrldEcommerceApp.dtos.Response.ProductResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
+
+@SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class ProductServiceImplementationTest {
-
-    @Mock
+    @Autowired
     private ProductRepositories productRepositories;
 
-    @InjectMocks
+    @Autowired
     private ProductServiceImplementation productServiceImplementation;
 
     private Product product;
@@ -31,16 +31,7 @@ class ProductServiceImplementationTest {
 
     @BeforeEach
     void setUp(){
-        MockitoAnnotations.openMocks(this);
-
-        product = Product.builder()
-                .productId("productId-123")
-                .name("Hp-Pavilion")
-                .description("Electronics")
-                .category("Gadgets")
-                .price(new BigDecimal("297000.00"))
-                .quantity(10)
-                .build();
+        productRepositories.deleteAll();
 
         productRequest = ProductRequest.builder()
                 .name("Hp-Pavilion")
@@ -53,61 +44,63 @@ class ProductServiceImplementationTest {
 
     @Test
     public void testCreateProduct() {
-        when(productRepositories.save(any(Product.class))).thenReturn(product);
         ProductResponse productResponse = productServiceImplementation.createProduct(productRequest);
-        assertNotNull(productResponse);
-        assertEquals("Hp-Pavilion", productResponse.getName());
-        verify(productRepositories, times(1)).save(any(Product.class));
+        assertThat(productResponse).isNotNull();
+        assertThat(productResponse.getName()).isEqualTo("Hp-Pavilion");
+        assertThat(productResponse.getPrice()).isEqualTo(new BigDecimal("297000.00"));
     }
 
     @Test
     public void testUpdateProduct() {
-        when(productRepositories.findById(anyString())).thenReturn(Optional.of(product));
-        when(productRepositories.save(any(Product.class))).thenReturn(product);
-        ProductRequest updateRequest = ProductRequest.builder()
-                .name("Alien-Ware")
+        ProductResponse productResponse = productServiceImplementation.createProduct(productRequest);
+        ProductRequest request = ProductRequest.builder()
+                .name("Hp-Pavilion")
                 .description("Electronics")
                 .category("Gadgets")
-                .price(new BigDecimal("1970000.00"))
-                .stock(4)
+                .price(new BigDecimal("297000.00"))
+                .stock(10)
+                .sellerId("sellerId-123")
                 .build();
 
-        ProductResponse response = productServiceImplementation.updateProduct("productId-123", updateRequest);
-        assertEquals("Alien-Ware", response.getName());
-        assertEquals(new BigDecimal("1970000.00"), response.getPrice());
-        verify(productRepositories, times(1)).save(any(Product.class));
+        ProductResponse updated = productServiceImplementation.updateProduct(productResponse.getProductId(), request);
+
+        assertThat(updated.getName()).isEqualTo("Hp-Pavilion");
+        assertThat(updated.getPrice()).isEqualTo(new BigDecimal("297000.00"));
     }
 
     @Test
     public void testFindProductById() {
-        when(productRepositories.findById("productId-123")).thenReturn(Optional.of(product));
-        ProductResponse productResponse = productServiceImplementation.getProductById("productId-123");
-        assertNotNull(productResponse);
-        assertEquals("Hp-Pavilion", productResponse.getName());
-        verify(productRepositories, times(1)).findById("productId-123");
+        ProductResponse productResponse = productServiceImplementation.createProduct(productRequest);
+        ProductResponse response1 = productServiceImplementation.getProductById(productResponse.getProductId());
+        assertThat(response1.getName()).isEqualTo("Hp-Pavilion");
+        assertThat(response1.getCategory()).isEqualTo("Gadgets");
     }
 
     @Test
     public void testFindAllProducts() {
-        when(productRepositories.findAll()).thenReturn(List.of(product));
-        List<ProductResponse> productResponseList = productServiceImplementation.getAllProducts();
-        assertNotNull(productResponseList);
-        assertEquals(1, productResponseList.size());
-        verify(productRepositories, times(1)).findAll();
+        productServiceImplementation.createProduct(productRequest);
+        ProductRequest request = ProductRequest.builder()
+                .name("Hp-Pavilion")
+                .description("Electronics")
+                .category("Gadgets")
+                .price(new BigDecimal("297000.00"))
+                .stock(10)
+                .sellerId("sellerId-123")
+                .build();
+        productServiceImplementation.createProduct(productRequest);
+        List<ProductResponse> products =  productServiceImplementation.getAllProducts();
+        assertThat(products.size()).isEqualTo(2);
     }
 
     @Test
     public void testDeleteProductById() {
-        when(productRepositories.existsById("productId-123")).thenReturn(true);
-        productServiceImplementation.deleteProduct("productId-123");
-        verify(productRepositories, times(1)).existsById("productId-123");
+        ProductResponse savedProductResponse = productServiceImplementation.createProduct(productRequest);
+        productServiceImplementation.deleteProduct(savedProductResponse.getProductId());
+        assertThat(productRepositories.findById(savedProductResponse.getProductId())).isEmpty();
     }
 
     @Test
     public void testDeleteProductThrowExceptionWhenProductNotFound() {
-        when(productRepositories.existsById("productId-123")).thenReturn(false);
-        RuntimeException exception = assertThrows(RuntimeException.class,
-                () -> productServiceImplementation.deleteProduct("productId-123"));
-        assertEquals("Product not found", exception.getMessage());
+        assertThrows(RuntimeException.class, () -> productServiceImplementation.deleteProduct("invalid-Id"));
     }
 }

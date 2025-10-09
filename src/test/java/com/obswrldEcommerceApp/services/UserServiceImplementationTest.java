@@ -9,35 +9,36 @@ import com.obswrldEcommerceApp.dtos.Response.UserLoginResponse;
 import com.obswrldEcommerceApp.dtos.Response.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class UserServiceImplementationTest {
 
-    @Mock
+    @Autowired
     private UserRepositories userRepositories;
 
-    @Mock
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @InjectMocks
+    @Autowired
     private UserServiceImplementation userService;
 
     private UserRegistrationRequest registrationRequest;
 
     @BeforeEach
     public void setUp() {
-        MockitoAnnotations.openMocks(this);
+        userRepositories.deleteAll();
+
         registrationRequest = UserRegistrationRequest.builder()
                 .name("John Mike")
                 .password("567tr")
@@ -48,93 +49,68 @@ class UserServiceImplementationTest {
 
     @Test
     public void testRegisterUser() {
-        when(bCryptPasswordEncoder.encode("567tr")).thenReturn("encoded567tr");
-        User saveUser = User.builder()
-                .userId("1")
-                .name("John Mike")
-                .password("567tr")
-                .email("johnmike1@gmail.com")
-                .roles(Set.of(Role.BUYER))
-                .build();
-        when(userRepositories.save(any(User.class))).thenReturn(saveUser);
         UserResponse userResponse = userService.register(registrationRequest);
-        assertThat(userResponse.getUserId()).isEqualTo("1");
+        assertThat(userResponse).isNotNull();
         assertThat(userResponse.getEmail()).isEqualTo("johnmike1@gmail.com");
+        User saved = userRepositories.findByEmail("johnmike1@gmail.com").orElseThrow();
+        assertThat(bCryptPasswordEncoder.matches("567tr", saved.getPassword())).isTrue();
     }
 
     @Test
     public void testLoinUserSuccessful(){
-        when(bCryptPasswordEncoder.encode("567tr")).thenReturn("encoded567tr");
-        User savedUser = User.builder()
-                .userId("user-123")
-                .name("John Mike")
-                .password("encoded567tr")
-                .email("johnmike1@gmail.com")
-                .roles(Set.of(Role.BUYER))
-                .build();
-
-        when(userRepositories.save(any(User.class))).thenReturn(savedUser);
-        UserResponse userResponse = userService.register(registrationRequest);
-        assertThat(userResponse.getUserId()).isEqualTo("user-123");
-        assertThat(userResponse.getEmail()).isEqualTo("johnmike1@gmail.com");
+        userService.register(registrationRequest);
+        UserLoginRequest userLoginRequest = new UserLoginRequest("johnmike1@gmail.com", "567tr");
+        UserLoginResponse userLoginResponse = userService.login(userLoginRequest);
+        assertThat(userLoginResponse).isNotNull();
+        assertThat(userLoginResponse.getMessage()).isEqualTo("Login Successful");
+        assertThat(userLoginResponse.getEmail()).isEqualTo("johnmike1@gmail.com");
     }
 
     @Test
     public void testLoginUserFailed(){
-        User user = User.builder()
-                .email("johnmike1@gmail.com")
-                .password("encoded567tr")
-                .build();
-        when(userRepositories.findByEmail("johnmike1@gmail.com")).thenReturn(Optional.of(user));
-        when(bCryptPasswordEncoder.matches("wrong", "encoded567tr")).thenReturn(false);
-        UserLoginRequest userLoginRequest = new UserLoginRequest("johnmike1@gmail.com", "wrong");
+        userService.register(registrationRequest);
+        UserLoginRequest userLoginRequest = new UserLoginRequest("johnmike1@gmail.com", "wrongPassword");
         UserLoginResponse userLoginResponse = userService.login(userLoginRequest);
         assertThat(userLoginResponse.getMessage()).isEqualTo("Invalid Password");
-        verify(userRepositories, times(1)).findByEmail("johnmike1@gmail.com");
     }
 
     @Test
     public void testFindUserByEmail(){
-        User user = User.builder()
-                .userId("userId-123")
-                .name("John Mike")
-                .email("johnmike1@gmail.com")
-                .password("encoded567tr")
-                .build();
-        when(userRepositories.findByEmail("johnmike1@gmail.com"))
-                .thenReturn(Optional.of(user));
-        UserResponse foundUser = userService.findByEmail("johnmike1@gmail.com");
-        assertThat(foundUser.getUserId()).isEqualTo("userId-123");
-        assertThat(foundUser.getName()).isEqualTo("John Mike");
+        userService.register(registrationRequest);
+        UserResponse userResponse = userService.findByEmail("johnmike1@gmail.com");
+        assertThat(userResponse).isNotNull();
+        assertThat(userResponse.getName()).isEqualTo("John Mike");
     }
 
     @Test
     public void testDeleteUserById(){
-        String userId = "userId-123";
-        when(userRepositories.existsById(userId)).thenReturn(true);
-        userService.deleteUser(userId);
-        verify(userRepositories, times(1)).deleteById(userId);
+        UserResponse userResponse = userService.register(registrationRequest);
+        userService.deleteUser(userResponse.getUserId());
+        assertThat(userRepositories.findById(userResponse.getUserId()).isEmpty()).isTrue();
     }
 
     @Test
     public void testGetAllUsers(){
-        User user1 = User.builder()
-                .userId("userId-123")
-                .name("John Mike")
-                .email("johnmike1@gmail.com")
-                .roles(Set.of(Role.BUYER))
-                .build();
-        User user2 = User.builder()
-                .userId("userId-323")
+        userService.register(registrationRequest);
+        UserRegistrationRequest secondUser = UserRegistrationRequest.builder()
                 .name("James Smith")
-                .email("jamessmith2@gmail.com")
+                .email("jamessmith1@gmail.com")
+                .password("12345")
                 .roles(Set.of(Role.BUYER))
                 .build();
-        when(userRepositories.findAll()).thenReturn(List.of(user1,user2));
-        var allUsers = userService.getAllUsers();
+        userService.register(secondUser);
+        List<UserResponse> allUsers = userService.getAllUsers();
         assertThat(allUsers).hasSize(2);
         assertThat(allUsers.get(0).getEmail()).isEqualTo("johnmike1@gmail.com");
-        assertThat(allUsers.get(1).getEmail()).isEqualTo("jamessmith2@gmail.com");
+        assertThat(allUsers.get(1).getEmail()).isEqualTo("jamessmith1@gmail.com");
+    }
+
+    @Test
+    public void testDeleteUserThatDoesNotExist(){
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.deleteUser("non-existing-user");
+        });
+        assertThat(exception.getMessage()).isEqualTo("User not found");
 
     }
 }
