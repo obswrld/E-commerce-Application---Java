@@ -1,9 +1,12 @@
 package com.obswrldEcommerceApp.utils;
 
 import com.obswrldEcommerceApp.data.models.Inventory;
+import com.obswrldEcommerceApp.data.models.Order;
 import com.obswrldEcommerceApp.data.models.Product;
 import com.obswrldEcommerceApp.dtos.Request.ProductRequest;
 import com.obswrldEcommerceApp.dtos.Response.InventoryResponse;
+import com.obswrldEcommerceApp.dtos.Response.OrderResponse;
+import com.obswrldEcommerceApp.dtos.Response.OrderSummaryResponse;
 import com.obswrldEcommerceApp.dtos.Response.ProductResponse;
 
 public class Mapper {
@@ -44,6 +47,26 @@ public class Mapper {
                 .productId(inventory.getProductId())
                 .stock(inventory.getStock())
                 .reserved(inventory.getReserved())
+                .build();
+    }
+
+    public static OrderResponse toOrderResponse(Order order) {
+            return OrderResponse.builder()
+                    .orderId(order.getOrderId())
+                    .customerId(order.getCustomerId())
+                    .orderStatus(order.getStatus().name())
+                    .orderItems(order.getOrderItemList())
+                    .totalPrice(order.getTotalPrice())
+                    .createdAt(order.getCreatedAt())
+                    .build();
+    }
+
+    public static OrderSummaryResponse toOrderSummaryResponse(Order order){
+        return OrderSummaryResponse.builder()
+                .orderId(order.getOrderId())
+                .customerId(order.getCustomerId())
+                .orderStatus(order.getStatus())
+                .createdAt(order.getCreatedAt())
                 .build();
     }
 }
